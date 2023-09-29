@@ -85,6 +85,13 @@ TOKEN :
         
 }
 
+TOKEN :
+{
+  < WALK : "Walk">
+  
+  
+}
+
 
 
 	//boolean command(uniandes.lym.robot.view.Console sistema) :
@@ -97,7 +104,8 @@ TOKEN :
 
 	
 	{
-		(		  (
+		(
+		  (
 		   <RIGHT> "(" ")" {world.turnRight();salida = "Command: Turnright";}
 		| 	<MOV>  "(" x=num() ")" {world.moveForward(x,false);salida = "Command: Moveforward ";}  
 		| 	<HOP>  "(" x=num() ")" {world.moveForward(x,true);salida = "Command:Jumpforward ";}

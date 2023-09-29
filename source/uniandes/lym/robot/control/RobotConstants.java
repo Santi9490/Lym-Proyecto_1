@@ -32,6 +32,8 @@ public interface RobotConstants {
   int NUM = 14;
   /** RegularExpression Id. */
   int DIGIT = 15;
+  /** RegularExpression Id. */
+  int WALK = 16;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -54,6 +56,7 @@ public interface RobotConstants {
     "\"CHIPS\"",
     "<NUM>",
     "<DIGIT>",
+    "\"Walk\"",
     "\"(\"",
     "\")\"",
     "\",\"",

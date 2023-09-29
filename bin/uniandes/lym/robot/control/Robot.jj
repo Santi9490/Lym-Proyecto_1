@@ -76,21 +76,54 @@ TOKEN:
 
 }
 
+TOKEN :
+{
+		  < WALK : "Walk">
+		| < LEAP : "Leap">
+		| < TURN : "turn">
+		| < TURNTO: "Turnto">
+		| < DROP: "Drop" >
+		| < GET : "Get">
+		| < GRAP: "Grap">
+		| < LETGO: "Letgo">
+		| < NOP: "nop" >
+		  
+}
 
+TOKEN : /* condicionales */
+{
+		  < IF : "If">
+		  | < ELSE : "Else">
+}
+
+TOKEN : /* loops*/
+{
+  		< WHILE : "While">
+}
+
+TOKEN : /* repeat times*/
+{
+		  < REPEAT : "Repeat">
+		| < TIMES : "Times">
+}
+
+TOKEN : /* conditional*/
+{
+		  < CAN : "Can">
+		| < FACING : "Facing">
+		|  < NOT : "Not" >
+}
 
 TOKEN :
 {
-		<NUM: (<DIGIT>)+ >
-		|  	<#DIGIT: ["0"-"9"] >
+  
+  <#LETRA: ["a"-"z", "A"-"Z"] >
+  | <#DIGIT: ["0"-"9"] >
+  | <NUM: (<DIGIT>)+ >
+  | < VAR : (< LETRA>|"_" )(< LETRA>| < DIGIT > | "_")* > 
         
 }
 
-TOKEN :
-{
-  < WALK : "Walk">
-  
-  
-}
 
 
 

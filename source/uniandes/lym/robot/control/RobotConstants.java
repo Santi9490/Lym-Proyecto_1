@@ -29,11 +29,47 @@ public interface RobotConstants {
   /** RegularExpression Id. */
   int CHIPS = 13;
   /** RegularExpression Id. */
-  int NUM = 14;
+  int WALK = 14;
   /** RegularExpression Id. */
-  int DIGIT = 15;
+  int LEAP = 15;
   /** RegularExpression Id. */
-  int WALK = 16;
+  int TURN = 16;
+  /** RegularExpression Id. */
+  int TURNTO = 17;
+  /** RegularExpression Id. */
+  int DROP = 18;
+  /** RegularExpression Id. */
+  int GET = 19;
+  /** RegularExpression Id. */
+  int GRAP = 20;
+  /** RegularExpression Id. */
+  int LETGO = 21;
+  /** RegularExpression Id. */
+  int NOP = 22;
+  /** RegularExpression Id. */
+  int IF = 23;
+  /** RegularExpression Id. */
+  int ELSE = 24;
+  /** RegularExpression Id. */
+  int WHILE = 25;
+  /** RegularExpression Id. */
+  int REPEAT = 26;
+  /** RegularExpression Id. */
+  int TIMES = 27;
+  /** RegularExpression Id. */
+  int CAN = 28;
+  /** RegularExpression Id. */
+  int FACING = 29;
+  /** RegularExpression Id. */
+  int NOT = 30;
+  /** RegularExpression Id. */
+  int LETRA = 31;
+  /** RegularExpression Id. */
+  int DIGIT = 32;
+  /** RegularExpression Id. */
+  int NUM = 33;
+  /** RegularExpression Id. */
+  int VAR = 34;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -54,9 +90,27 @@ public interface RobotConstants {
     "\"HOP\"",
     "\"BALLOONS\"",
     "\"CHIPS\"",
-    "<NUM>",
-    "<DIGIT>",
     "\"Walk\"",
+    "\"Leap\"",
+    "\"turn\"",
+    "\"Turnto\"",
+    "\"Drop\"",
+    "\"Get\"",
+    "\"Grap\"",
+    "\"Letgo\"",
+    "\"nop\"",
+    "\"If\"",
+    "\"Else\"",
+    "\"While\"",
+    "\"Repeat\"",
+    "\"Times\"",
+    "\"Can\"",
+    "\"Facing\"",
+    "\"Not\"",
+    "<LETRA>",
+    "<DIGIT>",
+    "<NUM>",
+    "<VAR>",
     "\"(\"",
     "\")\"",
     "\",\"",

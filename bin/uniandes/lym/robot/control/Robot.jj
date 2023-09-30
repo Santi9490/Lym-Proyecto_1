@@ -121,13 +121,12 @@ TOKEN : /* conditional*/
 		|  < NOT : "Not" >
 }
 
-TOKEN:/* Operadores*/
-{
-    < OPP : "(" >
-    |  < OP : ")" >
-    |  < APP : "{" >
-    |  < AP : "}" >
 
+
+TOKEN :
+{
+      < DIRECTION : "front" | "right" | "left" | "back">
+    | < ORIENTATION : "north" | "south" | "west" | "east">
 }
 
 TOKEN :
@@ -140,22 +139,16 @@ TOKEN :
         
 }
 
-TOKEN :
-{
-      < DIRECTION : "front" | "right" | "left" | "back">
-    | < ORIENTATION : "north" | "south" | "west" | "east">
-}
-
 void advancedCommands() :
 {
-    int v;
+    int x, y;
     String d, o;
 }
 {
     (
-        <JUMP> (jump())
-    |   <WALK> (walk())
-    |   <LEAP> (leap())
+        <JUMP> "(" x=num() "," y=num() ")"{world.setPostion(x, y);salida = "Command: JUMP to position (" + x + "," + y + ")";}
+    |   <WALK> "(" walk()")"
+    |   <LEAP> "(" (leap()) ")"
     |   <TURN> (turn())
     |   <TURNT> (turnt())
     |   <DROP> (drop())
@@ -166,41 +159,13 @@ void advancedCommands() :
     )
 }
 
-String direction() :
-{
-    String d;
-}
-{
-    d=<DIRECTION> { return d.image; }
-}
-
-String orientation() :
-{
-    String o;
-}
-{
-    o=<ORIENTATION> { return o.image; }
-}
-
-
-void jump() :
-{
-    int x, y;
-}
-{
-    <JUMP> "(" x=num() "," y=num() ")"
-    {
-        world.setPostion(x, y);
-        salida = "Command: JUMP to position (" + x + "," + y + ")";
-    }
-}
 
 
 void walk() :
 {
     int v;
     String d, o;
-}
+  }
 {
     <WALK> (v=num()) (d=direction() | o=orientation())?
     {
@@ -394,5 +359,22 @@ void nop() :
 			return total;
 		}
 	}
+
+String direction() :
+{
+    String d;
+}
+{
+    d=<DIRECTION> { return d.image; }
+}
+
+String orientation() :
+{
+    String o;
+}
+{
+    o=<ORIENTATION> { return o.image; }
+}
+	
 
 	

@@ -69,25 +69,17 @@ public interface RobotConstants {
   /** RegularExpression Id. */
   int NOT = 33;
   /** RegularExpression Id. */
-  int OPP = 34;
+  int DIRECTION = 34;
   /** RegularExpression Id. */
-  int OP = 35;
+  int ORIENTATION = 35;
   /** RegularExpression Id. */
-  int APP = 36;
+  int LETRA = 36;
   /** RegularExpression Id. */
-  int AP = 37;
+  int DIGIT = 37;
   /** RegularExpression Id. */
-  int LETRA = 38;
+  int NUM = 38;
   /** RegularExpression Id. */
-  int DIGIT = 39;
-  /** RegularExpression Id. */
-  int NUM = 40;
-  /** RegularExpression Id. */
-  int VAR = 41;
-  /** RegularExpression Id. */
-  int DIRECTION = 42;
-  /** RegularExpression Id. */
-  int ORIENTATION = 43;
+  int VAR = 39;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -128,17 +120,15 @@ public interface RobotConstants {
     "\"Can\"",
     "\"Facing\"",
     "\"Not\"",
-    "\"(\"",
-    "\")\"",
-    "\"{\"",
-    "\"}\"",
+    "<DIRECTION>",
+    "<ORIENTATION>",
     "<LETRA>",
     "<DIGIT>",
     "<NUM>",
     "<VAR>",
-    "<DIRECTION>",
-    "<ORIENTATION>",
+    "\"(\"",
     "\",\"",
+    "\")\"",
     "\";\"",
   };
 

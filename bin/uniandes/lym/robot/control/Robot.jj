@@ -149,13 +149,13 @@ void advancedCommands() :
         <JUMP> "(" x=num() "," y=num() ")"{world.setPostion(x, y);salida = "Command: JUMP to position (" + x + "," + y + ")";}
     |   <WALK> "(" walk()")"
     |   <LEAP> "(" (leap()) ")"
-    |   <TURN> (turn())
-    |   <TURNT> (turnt())
-    |   <DROP> (drop())
-    |   <GET> (get2())
-    |   <GRAB> (grab())
-    |   <LETGO> (letgo())
-    |   <NOP> (nop())
+    |   <TURN> "(" (turn())")"
+    |   <TURNT> "(" (turnt()) ")"
+    |   <DROP> "(" (drop()) ")"
+    |   <GET> "(" (get2()) ")"
+    |   <GRAB> "("(grab())")"
+    |   <LETGO> "(" (letgo()) ")"
+    |   <NOP> "(" (nop()) ")"
     )
 }
 

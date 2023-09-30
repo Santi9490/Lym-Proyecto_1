@@ -76,24 +76,31 @@ TOKEN:
 
 }
 
-TOKEN :
+TOKEN : /* validar */
 {
-		  < WALK : "Walk">
-		| < LEAP : "Leap">
-		| < TURN : "turn">
-		| < TURNTO: "Turnto">
-		| < DROP: "Drop" >
-		| < GET : "Get">
-		| < GRAP: "Grap">
-		| < LETGO: "Letgo">
-		| < NOP: "nop" >
-		  
+		  < DEFVAR : "Defvar">
+		  | < DEFPROC : "Defproc">
 }
 
-TOKEN : /* condicionales */
+TOKEN :  /* comandos avanzados */
+{
+      < JUMP : "jump">
+    | < WALK : "walk">
+    | < LEAP : "leap">
+    | < TURN : "turn">
+    | < TURNT : "turnto">
+    | < DROP : "drop">
+    | < GET : "get">
+    | < GRAB : "grab">
+    | < LETGO : "letgo">
+    | < NOP : "nop">
+}
+
+TOKEN : /* estructuras de control*/
 {
 		  < IF : "If">
 		  | < ELSE : "Else">
+		  
 }
 
 TOKEN : /* loops*/
@@ -114,6 +121,15 @@ TOKEN : /* conditional*/
 		|  < NOT : "Not" >
 }
 
+TOKEN:/* Operadores*/
+{
+    < OPP : "(" >
+    |  < OP : ")" >
+    |  < APP : "{" >
+    |  < AP : "}" >
+
+}
+
 TOKEN :
 {
   
@@ -122,6 +138,175 @@ TOKEN :
   | <NUM: (<DIGIT>)+ >
   | < VAR : (< LETRA>|"_" )(< LETRA>| < DIGIT > | "_")* > 
         
+}
+
+TOKEN :
+{
+      < DIRECTION : "front" | "right" | "left" | "back">
+    | < ORIENTATION : "north" | "south" | "west" | "east">
+}
+
+void advancedCommands() :
+{
+    int v;
+    String d, o;
+}
+{
+    (
+        <JUMP> (jump())
+    |   <WALK> (walk())
+    |   <LEAP> (leap())
+    |   <TURN> (turn())
+    |   <TURNT> (turnt())
+    |   <DROP> (drop())
+    |   <GET> (get2())
+    |   <GRAB> (grab())
+    |   <LETGO> (letgo())
+    |   <NOP> (nop())
+    )
+}
+
+String direction() :
+{
+    String d;
+}
+{
+    d=<DIRECTION> { return d.image; }
+}
+
+String orientation() :
+{
+    String o;
+}
+{
+    o=<ORIENTATION> { return o.image; }
+}
+
+
+void jump() :
+{
+    int x, y;
+}
+{
+    <JUMP> "(" x=num() "," y=num() ")"
+    {
+        world.setPostion(x, y);
+        salida = "Command: JUMP to position (" + x + "," + y + ")";
+    }
+}
+
+
+void walk() :
+{
+    int v;
+    String d, o;
+}
+{
+    <WALK> (v=num()) (d=direction() | o=orientation())?
+    {
+        if (d != null) {
+            salida = "Command: WALK " + v + " steps in direction " + d;
+        } else if (o != null) {
+            salida = "Command: WALK " + v + " steps facing " + o;
+        } else {
+            salida = "Command: WALK " + v + " steps forward";
+        }
+    }
+}
+
+
+void leap() :
+{
+    int v;
+    String d, o;
+}
+{
+    <LEAP> (v=num()) (d=direction() | o=orientation())?
+    {
+        if (d != null) {
+            salida = "Command: LEAP " + v + " steps in direction " + d;
+        } else if (o != null) {
+            salida = "Command: LEAP " + v + " steps facing " + o;
+        } else {
+            salida = "Command: LEAP " + v + " steps forward";
+        }
+    }
+}
+
+
+void turn() :
+{
+    String d;
+}
+{
+    <TURN> d=direction()
+    {
+        salida = "Command: TURN in direction " + d;
+    }
+}
+
+void turnt() :
+{
+    String o;
+}
+{
+    <TURNT> o=orientation()
+    {
+        salida = "Command: TURNTO facing " + o;
+    }
+}
+
+void drop() :
+{
+    int v;
+}
+{
+    <DROP> v=num()
+    {
+        salida = "Command: DROP " + v + " chips";
+    }
+}
+
+void get2() :
+{
+    int v;
+}
+{
+    <GET> v=num()
+    {
+        salida = "Command: GET " + v + " chips";
+    }
+}
+
+void grab() :
+{
+    int v;
+}
+{
+    <GRAB> v=num()
+    {
+        salida = "Command: GRAB " + v + " balloons";
+    }
+}
+
+void letgo() :
+{
+    int v;
+}
+{
+    <LETGO> v=num()
+    {
+        salida = "Command: LETGO " + v + " balloons";
+    }
+}
+
+void nop() :
+{}
+{
+    <NOP>
+    {
+        salida = "Command: NOP";
+    }
 }
 
 

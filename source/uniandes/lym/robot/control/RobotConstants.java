@@ -29,47 +29,65 @@ public interface RobotConstants {
   /** RegularExpression Id. */
   int CHIPS = 13;
   /** RegularExpression Id. */
-  int WALK = 14;
+  int DEFVAR = 14;
   /** RegularExpression Id. */
-  int LEAP = 15;
+  int DEFPROC = 15;
   /** RegularExpression Id. */
-  int TURN = 16;
+  int JUMP = 16;
   /** RegularExpression Id. */
-  int TURNTO = 17;
+  int WALK = 17;
   /** RegularExpression Id. */
-  int DROP = 18;
+  int LEAP = 18;
   /** RegularExpression Id. */
-  int GET = 19;
+  int TURN = 19;
   /** RegularExpression Id. */
-  int GRAP = 20;
+  int TURNT = 20;
   /** RegularExpression Id. */
-  int LETGO = 21;
+  int DROP = 21;
   /** RegularExpression Id. */
-  int NOP = 22;
+  int GET = 22;
   /** RegularExpression Id. */
-  int IF = 23;
+  int GRAB = 23;
   /** RegularExpression Id. */
-  int ELSE = 24;
+  int LETGO = 24;
   /** RegularExpression Id. */
-  int WHILE = 25;
+  int NOP = 25;
   /** RegularExpression Id. */
-  int REPEAT = 26;
+  int IF = 26;
   /** RegularExpression Id. */
-  int TIMES = 27;
+  int ELSE = 27;
   /** RegularExpression Id. */
-  int CAN = 28;
+  int WHILE = 28;
   /** RegularExpression Id. */
-  int FACING = 29;
+  int REPEAT = 29;
   /** RegularExpression Id. */
-  int NOT = 30;
+  int TIMES = 30;
   /** RegularExpression Id. */
-  int LETRA = 31;
+  int CAN = 31;
   /** RegularExpression Id. */
-  int DIGIT = 32;
+  int FACING = 32;
   /** RegularExpression Id. */
-  int NUM = 33;
+  int NOT = 33;
   /** RegularExpression Id. */
-  int VAR = 34;
+  int OPP = 34;
+  /** RegularExpression Id. */
+  int OP = 35;
+  /** RegularExpression Id. */
+  int APP = 36;
+  /** RegularExpression Id. */
+  int AP = 37;
+  /** RegularExpression Id. */
+  int LETRA = 38;
+  /** RegularExpression Id. */
+  int DIGIT = 39;
+  /** RegularExpression Id. */
+  int NUM = 40;
+  /** RegularExpression Id. */
+  int VAR = 41;
+  /** RegularExpression Id. */
+  int DIRECTION = 42;
+  /** RegularExpression Id. */
+  int ORIENTATION = 43;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -90,14 +108,17 @@ public interface RobotConstants {
     "\"HOP\"",
     "\"BALLOONS\"",
     "\"CHIPS\"",
-    "\"Walk\"",
-    "\"Leap\"",
+    "\"Defvar\"",
+    "\"Defproc\"",
+    "\"jump\"",
+    "\"walk\"",
+    "\"leap\"",
     "\"turn\"",
-    "\"Turnto\"",
-    "\"Drop\"",
-    "\"Get\"",
-    "\"Grap\"",
-    "\"Letgo\"",
+    "\"turnto\"",
+    "\"drop\"",
+    "\"get\"",
+    "\"grab\"",
+    "\"letgo\"",
     "\"nop\"",
     "\"If\"",
     "\"Else\"",
@@ -107,12 +128,16 @@ public interface RobotConstants {
     "\"Can\"",
     "\"Facing\"",
     "\"Not\"",
+    "\"(\"",
+    "\")\"",
+    "\"{\"",
+    "\"}\"",
     "<LETRA>",
     "<DIGIT>",
     "<NUM>",
     "<VAR>",
-    "\"(\"",
-    "\")\"",
+    "<DIRECTION>",
+    "<ORIENTATION>",
     "\",\"",
     "\";\"",
   };

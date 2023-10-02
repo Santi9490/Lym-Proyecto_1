@@ -38,11 +38,13 @@ public class Robot
 
 
 	private RobotWorldDec world;
-	
+
+	private Console sitema;
 	
 	void setWorld(RobotWorld w) {
 		world = (RobotWorldDec) w;	
 	}
+
 
 	String salida=new String();
 }
@@ -100,26 +102,22 @@ TOKEN : /* estructuras de control*/
 {
 		  < IF : "If">
 		  | < ELSE : "Else">
+		  | < WHILE : "While">
+		  | < REPEAT : "Repeat">
+		  | < TIMES : "Times">
 		  
 }
 
-TOKEN : /* loops*/
-{
-  		< WHILE : "While">
-}
 
-TOKEN : /* repeat times*/
-{
-		  < REPEAT : "Repeat">
-		| < TIMES : "Times">
-}
 
-TOKEN : /* conditional*/
-{
+
+
+TOKEN : {
 		  < CAN : "Can">
 		| < FACING : "Facing">
 		|  < NOT : "Not" >
 }
+
 
 
 
@@ -139,7 +137,17 @@ TOKEN :
         
 }
 
-// Validar
+
+void Robot(): {
+  Console sistema = new Console();
+  boolean respuesta = false; 
+  } {
+     respuesta = validar(sistema)
+     | respuesta = commandsconditional(sistema)
+     | respuesta = advancedCommands(sistema)
+     | respuesta = command(sistema)
+    }
+
 boolean validar(Console sistema): {
   String variable;
    }
@@ -147,7 +155,7 @@ boolean validar(Console sistema): {
   (
   (
    <DEFVAR> (defvar())
-  | <DEFPROC> (defproc())
+  | <DEFPROC> (defproc(sistema))
   )
     {
 		    try {
@@ -176,10 +184,11 @@ void defvar() :
 }
 
 
-void defproc() :
+void defproc(Console sistema) :
 {
     String procedureName;
     LinkedList<String> arguments = new LinkedList<String>();
+    boolean respuesta = false;
 }
 {
           <DEFPROC> procedureName = var() "("
@@ -188,87 +197,157 @@ void defproc() :
         (
             "," var() { arguments.add(token.image); }
         )*
-    )? ")" "{" (advancedCommands())?"}"
+    )? ")" "{" (respuesta = advancedCommands(sistema)| respuesta = command(sistema)|commandsconditional(sistema))*"}"
     {
        salida = "Command: DEFPROC " + procedureName;
     }
 }
 
 
-// Condiciones
 
 boolean facing() :
 {
-    String d;
+    String o;
     boolean respuesta = false;
 }
 {
     <FACING> "(" o=orientation() ")" 
     {
-        if (d.equals(
+        if (o.equals("north")) {
+          return world.facingNorth();
+          } else if (o.equals("south")) {
+            return world.facingSouth();
+            } else if (o.equals("west")) {
+            return world.facingWest();
+            } else {
+              return world.facingEast();
+              }
+           
         return respuesta;
     }
 }
 
-boolean canCommand() :
+boolean canCommand(Console sistema) :
 {
   boolean respuesta = false;
 }
 {
-    <CAN>"("respuesta = advancedCommands()| respuesta = command()")"
-
-    return respuesta;
+    <CAN>"("respuesta = advancedCommands(sistema)| respuesta = command(sistema)")" {
+       salida= "Command:Can";
+       return respuesta;
+      }
 }
 
-boolean notCondition() :
+boolean notCondition(Console sistema) :
 {
-    boolean conditionResult;
+    boolean respuesta = false;
 }
 {
-    <NOT> conditionResult = condition()
+    <NOT> respuesta = advancedCommands(sistema)| respuesta = command(sistema)
     {
-        
+       salida= "Command:Not";
+        return !respuesta;
     }
 }
 
-void if(): {
+
+boolean commandsconditional(Console sistema):
+{
+  } {(
+    
+    (
+        <WHILE> conditionwhile(sistema)
+      | <IF> commandIf(sistema)
+      | <ELSE> commandElse(sistema) )
+    {
+		    try {
+	    			 Thread.sleep(900);
+	    	    } catch (InterruptedException e) {
+	    			        System.err.format("IOException: %s%n", e);
+	    		    }
+	    			 
+			sistema.printOutput(salida);
+			return true;
+		})+
+
+    	| <EOF> {return false;}
+    }
+
+
+
+void conditionwhile(Console sistema):
+{
+  boolean valor= false;
+  boolean result = false;
+}
+{     <WHILE> valor= facing()| valor = canCommand(sistema) | valor = notCondition(sistema)
+   "{" bool = advancedCommands(sistema) | bool = command(sistema)
+        (";" bool = advancedCommands(sistema) | bool = command(sistema))*"}"
+   {
+     if (valor) {
+        while (valor) { 
+                
+            
+
+            if (!valor) {
+               salida= "Command:While ";
+                break;
+            }
+
+            
+            }
+         
+  }
+}  
+}
+
+void commandIf(Console sistema):{
+  boolean bool = false;
+  boolean respuesta = false;
   }
   {
-    < IF > (respuesta= cancommand()| respuesta= ) " { " ((avance|commands())*)?" }"
+    <IF> 
+        respuesta = canCommand(sistema)
+        | respuesta = facing()
+        | respuesta = notCondition(sistema)
+     "{" 
+        bool = advancedCommands(sistema) | bool = command(sistema)
+        (";" bool = advancedCommands(sistema) | bool = command(sistema))*
+      
+      "}" <ELSE> commandElse(sistema)
+    
     {
-      if (respuesta == true):
+      if (respuesta == true)
       {
         salida =  "Command: If";
  
-        }
-       else {
-         else()
-         }
+      	}
       
       }
   }
+  
 
-void else(): {
-  } {
+void commandElse(Console sistema):
+	{
+	  boolean result = false;
+  	}
+  	{
+  	  < ELSE > "{"
+  	    result = advancedCommands(sistema)|result =command(sistema)
+  	    ((";" result = advancedCommands(sistema)|result =command(sistema))*)"}"
+  	  {
+  	    salida = "Command: Else";
+  	    
+  	  }
     }
 
-void repeatTimes():
-{  int v;
-   }
-{ < REPAT > v = num() < TIMES > "{""}" {
-  
-  }
-  }
-
-
-// Comandos avanzados 
-void advancedCommands() :
+boolean advancedCommands(Console sistema) :
 {
     int x, y;
     String d, o;
 }
 {
-  
+  (    
     (
         <JUMP> "(" x=num() "," y=num() ")"
         {
@@ -284,8 +363,23 @@ void advancedCommands() :
     |   <GRAB> "(" grab() ")"
     |   <LETGO> "(" letgo() ")"
     |   <NOP> "(" nop() ")")
+    {
+		    try {
+	    			 Thread.sleep(900);
+	    	    } catch (InterruptedException e) {
+	    			        System.err.format("IOException: %s%n", e);
+	    		    }
+	    			 
+			sistema.printOutput(salida);
+			return true;
+		})+
+
+    	| <EOF> {return false;} 
+
+    
     
 }
+
 
 void walk() : {
     int v;
@@ -614,7 +708,7 @@ void nop() :
     <NOP>
     {
         salida = "Command: NOP";
-    }
+}
 }
 
 

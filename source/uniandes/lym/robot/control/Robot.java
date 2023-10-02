@@ -16,14 +16,60 @@ public class Robot implements RobotConstants {
 
         private RobotWorldDec world;
 
+        private Console sitema;
 
         void setWorld(RobotWorld w) {
                 world = (RobotWorldDec) w;
         }
 
+
         String salida=new String();
 
-// Validar
+  final public void Robot() throws ParseException {Console sistema = new Console();
+  boolean respuesta = false;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case DEFVAR:
+    case DEFPROC:{
+      respuesta = validar(sistema);
+      break;
+      }
+    case 0:
+    case IF:
+    case ELSE:
+    case WHILE:{
+      respuesta = commandsconditional(sistema);
+      break;
+      }
+    case JUMP:
+    case WALK:
+    case LEAP:
+    case TURN:
+    case TURNT:
+    case DROP:
+    case GET:
+    case GRAB:
+    case LETGO:
+    case NOP:{
+      respuesta = advancedCommands(sistema);
+      break;
+      }
+    case MOV:
+    case RIGHT:
+    case PUT:
+    case PICK:
+    case POP:
+    case GO:
+    case HOP:{
+      respuesta = command(sistema);
+      break;
+      }
+    default:
+      jj_la1[0] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+}
+
   final public boolean validar(Console sistema) throws ParseException {String variable;
     label_1:
     while (true) {
@@ -35,11 +81,11 @@ public class Robot implements RobotConstants {
         }
       case DEFPROC:{
         jj_consume_token(DEFPROC);
-        defproc();
+        defproc(sistema);
         break;
         }
       default:
-        jj_la1[0] = jj_gen;
+        jj_la1[1] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -58,7 +104,7 @@ try {
         break;
         }
       default:
-        jj_la1[1] = jj_gen;
+        jj_la1[2] = jj_gen;
         break label_1;
       }
     }
@@ -73,8 +119,9 @@ try {
 salida = "Command: DEFVAR " + variableName;
 }
 
-  final public void defproc() throws ParseException {String procedureName;
+  final public void defproc(Console sistema) throws ParseException {String procedureName;
     LinkedList<String> arguments = new LinkedList<String>();
+    boolean respuesta = false;
     jj_consume_token(DEFPROC);
     procedureName = var();
     jj_consume_token(40);
@@ -90,7 +137,7 @@ arguments.add(token.image);
           break;
           }
         default:
-          jj_la1[2] = jj_gen;
+          jj_la1[3] = jj_gen;
           break label_2;
         }
         jj_consume_token(41);
@@ -100,11 +147,475 @@ arguments.add(token.image);
       break;
       }
     default:
-      jj_la1[3] = jj_gen;
+      jj_la1[4] = jj_gen;
       ;
     }
     jj_consume_token(42);
     jj_consume_token(43);
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case 0:
+      case MOV:
+      case RIGHT:
+      case PUT:
+      case PICK:
+      case POP:
+      case GO:
+      case HOP:
+      case JUMP:
+      case WALK:
+      case LEAP:
+      case TURN:
+      case TURNT:
+      case DROP:
+      case GET:
+      case GRAB:
+      case LETGO:
+      case NOP:
+      case IF:
+      case ELSE:
+      case WHILE:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[5] = jj_gen;
+        break label_3;
+      }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case 0:
+      case JUMP:
+      case WALK:
+      case LEAP:
+      case TURN:
+      case TURNT:
+      case DROP:
+      case GET:
+      case GRAB:
+      case LETGO:
+      case NOP:{
+        respuesta = advancedCommands(sistema);
+        break;
+        }
+      case MOV:
+      case RIGHT:
+      case PUT:
+      case PICK:
+      case POP:
+      case GO:
+      case HOP:{
+        respuesta = command(sistema);
+        break;
+        }
+      case IF:
+      case ELSE:
+      case WHILE:{
+        commandsconditional(sistema);
+        break;
+        }
+      default:
+        jj_la1[6] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+    jj_consume_token(44);
+salida = "Command: DEFPROC " + procedureName;
+}
+
+  final public boolean facing() throws ParseException {String o;
+    boolean respuesta = false;
+    jj_consume_token(FACING);
+    jj_consume_token(40);
+    o = orientation();
+    jj_consume_token(42);
+if (o.equals("north")) {
+          {if ("" != null) return world.facingNorth();}
+          } else if (o.equals("south")) {
+            {if ("" != null) return world.facingSouth();}
+            } else if (o.equals("west")) {
+            {if ("" != null) return world.facingWest();}
+            } else {
+              {if ("" != null) return world.facingEast();}
+              }
+
+        {if ("" != null) return respuesta;}
+    throw new Error("Missing return statement in function");
+}
+
+  final public boolean canCommand(Console sistema) throws ParseException {boolean respuesta = false;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case CAN:{
+      jj_consume_token(CAN);
+      jj_consume_token(40);
+      respuesta = advancedCommands(sistema);
+      break;
+      }
+    case 0:
+    case MOV:
+    case RIGHT:
+    case PUT:
+    case PICK:
+    case POP:
+    case GO:
+    case HOP:{
+      respuesta = command(sistema);
+      jj_consume_token(42);
+salida= "Command:Can";
+       {if ("" != null) return respuesta;}
+      break;
+      }
+    default:
+      jj_la1[7] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  final public boolean notCondition(Console sistema) throws ParseException {boolean respuesta = false;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case NOT:{
+      jj_consume_token(NOT);
+      respuesta = advancedCommands(sistema);
+      break;
+      }
+    case 0:
+    case MOV:
+    case RIGHT:
+    case PUT:
+    case PICK:
+    case POP:
+    case GO:
+    case HOP:{
+      respuesta = command(sistema);
+salida= "Command:Not";
+        {if ("" != null) return !respuesta;}
+      break;
+      }
+    default:
+      jj_la1[8] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  final public boolean commandsconditional(Console sistema) throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case IF:
+    case ELSE:
+    case WHILE:{
+      label_4:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case WHILE:{
+          jj_consume_token(WHILE);
+          conditionwhile(sistema);
+          break;
+          }
+        case IF:{
+          jj_consume_token(IF);
+          commandIf(sistema);
+          break;
+          }
+        case ELSE:{
+          jj_consume_token(ELSE);
+          commandElse(sistema);
+          break;
+          }
+        default:
+          jj_la1[9] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+try {
+                                 Thread.sleep(900);
+                    } catch (InterruptedException e) {
+                                        System.err.format("IOException: %s%n", e);
+                            }
+
+                        sistema.printOutput(salida);
+                        {if ("" != null) return true;}
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case IF:
+        case ELSE:
+        case WHILE:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[10] = jj_gen;
+          break label_4;
+        }
+      }
+      break;
+      }
+    case 0:{
+      jj_consume_token(0);
+{if ("" != null) return false;}
+      break;
+      }
+    default:
+      jj_la1[11] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  final public void conditionwhile(Console sistema) throws ParseException {boolean valor= false;
+  boolean result = false;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case WHILE:{
+      jj_consume_token(WHILE);
+      valor = facing();
+      break;
+      }
+    case 0:
+    case MOV:
+    case RIGHT:
+    case PUT:
+    case PICK:
+    case POP:
+    case GO:
+    case HOP:
+    case CAN:{
+      valor = canCommand(sistema);
+      break;
+      }
+    case NOT:{
+      valor = notCondition(sistema);
+      jj_consume_token(43);
+      bool = advancedCommands(sistema);
+      break;
+      }{
+      bool = command(sistema);
+      label_5:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 0:
+        case MOV:
+        case RIGHT:
+        case PUT:
+        case PICK:
+        case POP:
+        case GO:
+        case HOP:
+        case 45:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[12] = jj_gen;
+          break label_5;
+        }
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 45:{
+          jj_consume_token(45);
+          bool = advancedCommands(sistema);
+          break;
+          }
+        case 0:
+        case MOV:
+        case RIGHT:
+        case PUT:
+        case PICK:
+        case POP:
+        case GO:
+        case HOP:{
+          bool = command(sistema);
+          break;
+          }
+        default:
+          jj_la1[13] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+      jj_consume_token(44);
+if (valor) {
+        while (valor) {
+
+
+
+            if (!valor) {
+               salida= "Command:While ";
+                break;
+            }
+
+
+            }
+
+  }
+      break;
+      }
+    default:
+      jj_la1[14] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+}
+
+  final public void commandIf(Console sistema) throws ParseException {boolean bool = false;
+  boolean respuesta = false;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case IF:{
+      jj_consume_token(IF);
+      respuesta = canCommand(sistema);
+      break;
+      }
+    case FACING:{
+      respuesta = facing();
+      break;
+      }
+    case 0:
+    case MOV:
+    case RIGHT:
+    case PUT:
+    case PICK:
+    case POP:
+    case GO:
+    case HOP:
+    case NOT:{
+      respuesta = notCondition(sistema);
+      jj_consume_token(43);
+      bool = advancedCommands(sistema);
+      break;
+      }{
+      bool = command(sistema);
+      label_6:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 0:
+        case MOV:
+        case RIGHT:
+        case PUT:
+        case PICK:
+        case POP:
+        case GO:
+        case HOP:
+        case 45:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[15] = jj_gen;
+          break label_6;
+        }
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 45:{
+          jj_consume_token(45);
+          bool = advancedCommands(sistema);
+          break;
+          }
+        case 0:
+        case MOV:
+        case RIGHT:
+        case PUT:
+        case PICK:
+        case POP:
+        case GO:
+        case HOP:{
+          bool = command(sistema);
+          break;
+          }
+        default:
+          jj_la1[16] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+      jj_consume_token(44);
+      jj_consume_token(ELSE);
+      commandElse(sistema);
+if (respuesta == true)
+      {
+        salida =  "Command: If";
+
+        }
+      break;
+      }
+    default:
+      jj_la1[17] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+}
+
+  final public void commandElse(Console sistema) throws ParseException {boolean result = false;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case ELSE:{
+      jj_consume_token(ELSE);
+      jj_consume_token(43);
+      result = advancedCommands(sistema);
+      break;
+      }
+    case 0:
+    case MOV:
+    case RIGHT:
+    case PUT:
+    case PICK:
+    case POP:
+    case GO:
+    case HOP:{
+      result = command(sistema);
+      label_7:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 0:
+        case MOV:
+        case RIGHT:
+        case PUT:
+        case PICK:
+        case POP:
+        case GO:
+        case HOP:
+        case 45:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[18] = jj_gen;
+          break label_7;
+        }
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 45:{
+          jj_consume_token(45);
+          result = advancedCommands(sistema);
+          break;
+          }
+        case 0:
+        case MOV:
+        case RIGHT:
+        case PUT:
+        case PICK:
+        case POP:
+        case GO:
+        case HOP:{
+          result = command(sistema);
+          break;
+          }
+        default:
+          jj_la1[19] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+      jj_consume_token(44);
+salida = "Command: Else";
+      break;
+      }
+    default:
+      jj_la1[20] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+}
+
+  final public boolean advancedCommands(Console sistema) throws ParseException {int x, y;
+    String d, o;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case JUMP:
     case WALK:
@@ -116,100 +627,124 @@ arguments.add(token.image);
     case GRAB:
     case LETGO:
     case NOP:{
-      advancedCommands();
-      break;
-      }
-    default:
-      jj_la1[4] = jj_gen;
-      ;
-    }
-    jj_consume_token(44);
-salida = "Command: DEFPROC " + procedureName;
-}
-
-// Condiciones
-
-
-
-// Comandos avanzados 
-  final public void advancedCommands() throws ParseException {int x, y;
-    String d, o;
-    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case JUMP:{
-      jj_consume_token(JUMP);
-      jj_consume_token(40);
-      x = num();
-      jj_consume_token(41);
-      y = num();
-      jj_consume_token(42);
+      label_8:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case JUMP:{
+          jj_consume_token(JUMP);
+          jj_consume_token(40);
+          x = num();
+          jj_consume_token(41);
+          y = num();
+          jj_consume_token(42);
 world.setPostion(x, y);
             salida = "Command: JUMP to position (" + x + "," + y + ")";
+          break;
+          }
+        case WALK:{
+          jj_consume_token(WALK);
+          walk();
+          break;
+          }
+        case LEAP:{
+          jj_consume_token(LEAP);
+          leap();
+          break;
+          }
+        case TURN:{
+          jj_consume_token(TURN);
+          jj_consume_token(40);
+          turn();
+          jj_consume_token(42);
+          break;
+          }
+        case TURNT:{
+          jj_consume_token(TURNT);
+          jj_consume_token(40);
+          turnt();
+          jj_consume_token(42);
+          break;
+          }
+        case DROP:{
+          jj_consume_token(DROP);
+          jj_consume_token(40);
+          drop();
+          jj_consume_token(42);
+          break;
+          }
+        case GET:{
+          jj_consume_token(GET);
+          jj_consume_token(40);
+          get2();
+          jj_consume_token(42);
+          break;
+          }
+        case GRAB:{
+          jj_consume_token(GRAB);
+          jj_consume_token(40);
+          grab();
+          jj_consume_token(42);
+          break;
+          }
+        case LETGO:{
+          jj_consume_token(LETGO);
+          jj_consume_token(40);
+          letgo();
+          jj_consume_token(42);
+          break;
+          }
+        case NOP:{
+          jj_consume_token(NOP);
+          jj_consume_token(40);
+          nop();
+          jj_consume_token(42);
+          break;
+          }
+        default:
+          jj_la1[21] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+try {
+                                 Thread.sleep(900);
+                    } catch (InterruptedException e) {
+                                        System.err.format("IOException: %s%n", e);
+                            }
+
+                        sistema.printOutput(salida);
+                        {if ("" != null) return true;}
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case JUMP:
+        case WALK:
+        case LEAP:
+        case TURN:
+        case TURNT:
+        case DROP:
+        case GET:
+        case GRAB:
+        case LETGO:
+        case NOP:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[22] = jj_gen;
+          break label_8;
+        }
+      }
       break;
       }
-    case WALK:{
-      jj_consume_token(WALK);
-      walk();
-      break;
-      }
-    case LEAP:{
-      jj_consume_token(LEAP);
-      leap();
-      break;
-      }
-    case TURN:{
-      jj_consume_token(TURN);
-      jj_consume_token(40);
-      turn();
-      jj_consume_token(42);
-      break;
-      }
-    case TURNT:{
-      jj_consume_token(TURNT);
-      jj_consume_token(40);
-      turnt();
-      jj_consume_token(42);
-      break;
-      }
-    case DROP:{
-      jj_consume_token(DROP);
-      jj_consume_token(40);
-      drop();
-      jj_consume_token(42);
-      break;
-      }
-    case GET:{
-      jj_consume_token(GET);
-      jj_consume_token(40);
-      get2();
-      jj_consume_token(42);
-      break;
-      }
-    case GRAB:{
-      jj_consume_token(GRAB);
-      jj_consume_token(40);
-      grab();
-      jj_consume_token(42);
-      break;
-      }
-    case LETGO:{
-      jj_consume_token(LETGO);
-      jj_consume_token(40);
-      letgo();
-      jj_consume_token(42);
-      break;
-      }
-    case NOP:{
-      jj_consume_token(NOP);
-      jj_consume_token(40);
-      nop();
-      jj_consume_token(42);
+    case 0:{
+      jj_consume_token(0);
+{if ("" != null) return false;}
       break;
       }
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[23] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
 }
 
   final public void walk() throws ParseException {int v;
@@ -233,14 +768,14 @@ o = orientation();
         break;
         }
       default:
-        jj_la1[6] = jj_gen;
+        jj_la1[24] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
       }
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[25] = jj_gen;
       ;
     }
     jj_consume_token(42);
@@ -332,14 +867,14 @@ o = orientation();
         break;
         }
       default:
-        jj_la1[8] = jj_gen;
+        jj_la1[26] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
       }
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[27] = jj_gen;
       ;
     }
     jj_consume_token(42);
@@ -542,7 +1077,7 @@ salida = "Command: NOP";
     case POP:
     case GO:
     case HOP:{
-      label_3:
+      label_9:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case RIGHT:{
@@ -601,7 +1136,7 @@ world.popBalloons(x); salida = "Comando:  Pop";
           break;
           }
         default:
-          jj_la1[10] = jj_gen;
+          jj_la1[28] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -626,8 +1161,8 @@ try {
           break;
           }
         default:
-          jj_la1[11] = jj_gen;
-          break label_3;
+          jj_la1[29] = jj_gen;
+          break label_9;
         }
       }
       break;
@@ -638,7 +1173,7 @@ try {
       break;
       }
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[30] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -662,7 +1197,7 @@ world.putBalloons(f); salida = "Command:  Put Balloons";
       break;
       }
     default:
-      jj_la1[13] = jj_gen;
+      jj_la1[31] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -685,7 +1220,7 @@ world.grabBalloons(f);salida="Command:  Pick balloons";
       break;
       }
     default:
-      jj_la1[14] = jj_gen;
+      jj_la1[32] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -738,7 +1273,7 @@ try
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[15];
+  final private int[] jj_la1 = new int[33];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -746,10 +1281,10 @@ try
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0xc000,0xc000,0x0,0x0,0x3ff0000,0x3ff0000,0x0,0x0,0x0,0x0,0xfe0,0xfe0,0xfe1,0x3000,0x3000,};
+	   jj_la1_0 = new int[] {0x1fffcfe1,0xc000,0xc000,0x0,0x0,0x1fff0fe1,0x1fff0fe1,0x80000fe1,0xfe1,0x1c000000,0x1c000000,0x1c000001,0xfe1,0xfe1,0x90000fe1,0xfe1,0xfe1,0x4000fe1,0xfe1,0xfe1,0x8000fe1,0x3ff0000,0x3ff0000,0x3ff0001,0x0,0x0,0x0,0x0,0xfe0,0xfe0,0xfe1,0x3000,0x3000,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x200,0x80,0x0,0x0,0xc,0x200,0xc,0x200,0x0,0x0,0x0,0x0,0x0,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x200,0x80,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x2000,0x2000,0x2,0x2000,0x2000,0x3,0x2000,0x2000,0x0,0x0,0x0,0x0,0xc,0x200,0xc,0x200,0x0,0x0,0x0,0x0,0x0,};
 	}
 
   /** Constructor with InputStream. */
@@ -763,7 +1298,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 33; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -777,7 +1312,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 33; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -787,7 +1322,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 33; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -805,7 +1340,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 33; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -814,7 +1349,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 33; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -823,7 +1358,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 33; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -879,7 +1414,7 @@ try
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 15; i++) {
+	 for (int i = 0; i < 33; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {

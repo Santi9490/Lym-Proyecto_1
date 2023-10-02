@@ -146,31 +146,42 @@ void advancedCommands() :
 }
 {
     (
-        <JUMP> "(" x=num() "," y=num() ")"{world.setPostion(x, y);salida = "Command: JUMP to position (" + x + "," + y + ")";}
-    |   <WALK> "(" walk()")"
-    |   <LEAP> "(" (leap()) ")"
-    |   <TURN> "(" (turn())")"
-    |   <TURNT> "(" (turnt()) ")"
-    |   <DROP> "(" (drop()) ")"
-    |   <GET> "(" (get2()) ")"
-    |   <GRAB> "("(grab())")"
-    |   <LETGO> "(" (letgo()) ")"
-    |   <NOP> "(" (nop()) ")"
+        <JUMP> "(" x=num() "," y=num() ")"
+        {
+            world.setPostion(x, y);
+            salida = "Command: JUMP to position (" + x + "," + y + ")";
+        }
+    |   <WALK> (walk())
+    |   <LEAP> (leap())
+    |   <TURN> "(" turn() ")"
+    |   <TURNT> "(" turnt() ")"
+    |   <DROP> "(" drop() ")"
+    |   <GET> "(" get2() ")"
+    |   <GRAB> "(" grab() ")"
+    |   <LETGO> "(" letgo() ")"
+    |   <NOP> "(" nop() ")"
     )
 }
 
-
-
-void walk() :
-{
+void walk() : {
     int v;
-    String d, o;
-  }
+    String d = null;
+    String o = null;
+}
 {
-    <WALK> (v=num()) (d=direction() | o=orientation())?
+    <WALK> "("
+    v = num()
+    (   ","
+        (
+          <DIRECTION> { d = direction(); }
+        |
+        <ORIENTATION> { o = orientation(); }
+      )
+    )?
+    ")"
     {
         if (d != null) {
-            salida = "Command: WALK " + v + " steps in direction " + d;
+            world. salida = "Command: WALK " + v + " steps in direction " + d;
         } else if (o != null) {
             salida = "Command: WALK " + v + " steps facing " + o;
         } else {
@@ -179,14 +190,22 @@ void walk() :
     }
 }
 
-
-void leap() :
-{
+void leap() : {
     int v;
-    String d, o;
+    String d = null;
+    String o = null;
 }
 {
-    <LEAP> (v=num()) (d=direction() | o=orientation())?
+    <LEAP> "("
+    v = num() 
+    (   ","
+        (
+          <DIRECTION> { d = direction(); }
+        |
+        <ORIENTATION> { o = orientation(); }
+      )
+    )?
+    ")"
     {
         if (d != null) {
             salida = "Command: LEAP " + v + " steps in direction " + d;
@@ -197,6 +216,10 @@ void leap() :
         }
     }
 }
+
+
+
+
 
 
 void turn() :
@@ -273,6 +296,10 @@ void nop() :
         salida = "Command: NOP";
     }
 }
+
+
+
+
 
 
 
@@ -365,7 +392,7 @@ String direction() :
     String d;
 }
 {
-    d=<DIRECTION> { return d.image; }
+    <DIRECTION> { return token.image; }
 }
 
 String orientation() :
@@ -373,8 +400,8 @@ String orientation() :
     String o;
 }
 {
-    o=<ORIENTATION> { return o.image; }
+    <ORIENTATION> { return token.image; }
 }
-	
+
 
 	

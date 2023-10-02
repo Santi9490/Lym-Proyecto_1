@@ -33,56 +33,67 @@ public class Robot implements RobotConstants {
       jj_consume_token(41);
       y = num();
       jj_consume_token(42);
-world.setPostion(x, y);salida = "Command: JUMP to position (" + x + "," + y + ")";
+world.setPostion(x, y);
+            salida = "Command: JUMP to position (" + x + "," + y + ")";
       break;
       }
     case WALK:{
       jj_consume_token(WALK);
-      jj_consume_token(40);
       walk();
-      jj_consume_token(42);
       break;
       }
     case LEAP:{
       jj_consume_token(LEAP);
-      jj_consume_token(40);
       leap();
-      jj_consume_token(42);
       break;
       }
     case TURN:{
       jj_consume_token(TURN);
+      jj_consume_token(40);
       turn();
+      jj_consume_token(42);
       break;
       }
     case TURNT:{
       jj_consume_token(TURNT);
+      jj_consume_token(40);
       turnt();
+      jj_consume_token(42);
       break;
       }
     case DROP:{
       jj_consume_token(DROP);
+      jj_consume_token(40);
       drop();
+      jj_consume_token(42);
       break;
       }
     case GET:{
       jj_consume_token(GET);
+      jj_consume_token(40);
       get2();
+      jj_consume_token(42);
       break;
       }
     case GRAB:{
       jj_consume_token(GRAB);
+      jj_consume_token(40);
       grab();
+      jj_consume_token(42);
       break;
       }
     case LETGO:{
       jj_consume_token(LETGO);
+      jj_consume_token(40);
       letgo();
+      jj_consume_token(42);
       break;
       }
     case NOP:{
       jj_consume_token(NOP);
+      jj_consume_token(40);
       nop();
+      jj_consume_token(42);
       break;
       }
     default:
@@ -93,19 +104,23 @@ world.setPostion(x, y);salida = "Command: JUMP to position (" + x + "," + y + ")
 }
 
   final public void walk() throws ParseException {int v;
-    String d, o = null;
+    String d = null;
+    String o = null;
     jj_consume_token(WALK);
+    jj_consume_token(40);
     v = num();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case DIRECTION:
-    case ORIENTATION:{
+    case 41:{
+      jj_consume_token(41);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case DIRECTION:{
-        d = direction();
+        jj_consume_token(DIRECTION);
+d = direction();
         break;
         }
       case ORIENTATION:{
-        o = orientation();
+        jj_consume_token(ORIENTATION);
+o = orientation();
         break;
         }
       default:
@@ -119,8 +134,9 @@ world.setPostion(x, y);salida = "Command: JUMP to position (" + x + "," + y + ")
       jj_la1[2] = jj_gen;
       ;
     }
+    jj_consume_token(42);
 if (d != null) {
-            salida = "Command: WALK " + v + " steps in direction " + d;
+            world. salida = "Command: WALK " + v + " steps in direction " + d;
         } else if (o != null) {
             salida = "Command: WALK " + v + " steps facing " + o;
         } else {
@@ -129,19 +145,23 @@ if (d != null) {
 }
 
   final public void leap() throws ParseException {int v;
-    String d, o;
+    String d = null;
+    String o = null;
     jj_consume_token(LEAP);
+    jj_consume_token(40);
     v = num();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case DIRECTION:
-    case ORIENTATION:{
+    case 41:{
+      jj_consume_token(41);
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case DIRECTION:{
-        d = direction();
+        jj_consume_token(DIRECTION);
+d = direction();
         break;
         }
       case ORIENTATION:{
-        o = orientation();
+        jj_consume_token(ORIENTATION);
+o = orientation();
         break;
         }
       default:
@@ -155,6 +175,7 @@ if (d != null) {
       jj_la1[4] = jj_gen;
       ;
     }
+    jj_consume_token(42);
 if (d != null) {
             salida = "Command: LEAP " + v + " steps in direction " + d;
         } else if (o != null) {
@@ -386,14 +407,14 @@ try
 }
 
   final public String direction() throws ParseException {String d;
-    d = jj_consume_token(DIRECTION);
-{if ("" != null) return d.image;}
+    jj_consume_token(DIRECTION);
+{if ("" != null) return token.image;}
     throw new Error("Missing return statement in function");
 }
 
   final public String orientation() throws ParseException {String o;
-    o = jj_consume_token(ORIENTATION);
-{if ("" != null) return o.image;}
+    jj_consume_token(ORIENTATION);
+{if ("" != null) return token.image;}
     throw new Error("Missing return statement in function");
 }
 
@@ -417,7 +438,7 @@ try
 	   jj_la1_0 = new int[] {0x3ff0000,0x0,0x0,0x0,0x0,0xfe0,0xfe0,0xfe1,0x3000,0x3000,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0xc,0xc,0xc,0xc,0x0,0x0,0x0,0x0,0x0,};
+	   jj_la1_1 = new int[] {0x0,0xc,0x200,0xc,0x200,0x0,0x0,0x0,0x0,0x0,};
 	}
 
   /** Constructor with InputStream. */

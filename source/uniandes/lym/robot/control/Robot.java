@@ -136,7 +136,7 @@ o = orientation();
     }
     jj_consume_token(42);
 if (d != null) {
-            world. salida = "Command: WALK " + v + " steps in direction " + d;
+           salida = "Command: WALK " + v + " steps in direction " + d;
         } else if (o != null) {
             salida = "Command: WALK " + v + " steps facing " + o;
         } else {

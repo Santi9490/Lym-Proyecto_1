@@ -181,7 +181,7 @@ void walk() : {
     ")"
     {
         if (d != null) {
-            world. salida = "Command: WALK " + v + " steps in direction " + d;
+           salida = "Command: WALK " + v + " steps in direction " + d;
         } else if (o != null) {
             salida = "Command: WALK " + v + " steps facing " + o;
         } else {

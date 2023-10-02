@@ -125,7 +125,7 @@ TOKEN : /* conditional*/
 
 TOKEN :
 {
-      < DIRECTION : "front" | "right" | "left" | "back">
+      < DIRECTION : "front" | "right" | "left" | "back"|"around">
     | < ORIENTATION : "north" | "south" | "west" | "east">
 }
 
@@ -139,12 +139,136 @@ TOKEN :
         
 }
 
+// Validar
+boolean validar(Console sistema): {
+  String variable;
+   }
+{
+  (
+  (
+   <DEFVAR> (defvar())
+  | <DEFPROC> (defproc())
+  )
+    {
+		    try {
+	    			 Thread.sleep(900);
+	    	    } catch (InterruptedException e) {
+	    			        System.err.format("IOException: %s%n", e);
+	    		    }
+	    			 
+			sistema.printOutput(salida);
+			return true;
+		})+
+
+}
+
+void defvar() :
+{
+    String variableName;
+    int variableValue;
+}
+{
+  
+    <DEFVAR> variableName = var() variableValue = num()
+    {
+      salida = "Command: DEFVAR " + variableName;
+    }
+}
+
+
+void defproc() :
+{
+    String procedureName;
+    LinkedList<String> arguments = new LinkedList<String>();
+}
+{
+          <DEFPROC> procedureName = var() "("
+    (
+        var() { arguments.add(token.image); }
+        (
+            "," var() { arguments.add(token.image); }
+        )*
+    )? ")" "{" (advancedCommands())?"}"
+    {
+       salida = "Command: DEFPROC " + procedureName;
+    }
+}
+
+
+// Condiciones
+
+boolean facing() :
+{
+    String d;
+    boolean respuesta = false;
+}
+{
+    <FACING> "(" o=orientation() ")" 
+    {
+        if (d.equals(
+        return respuesta;
+    }
+}
+
+boolean canCommand() :
+{
+  boolean respuesta = false;
+}
+{
+    <CAN>"("respuesta = advancedCommands()| respuesta = command()")"
+
+    return respuesta;
+}
+
+boolean notCondition() :
+{
+    boolean conditionResult;
+}
+{
+    <NOT> conditionResult = condition()
+    {
+        
+    }
+}
+
+void if(): {
+  }
+  {
+    < IF > (respuesta= cancommand()| respuesta= ) " { " ((avance|commands())*)?" }"
+    {
+      if (respuesta == true):
+      {
+        salida =  "Command: If";
+ 
+        }
+       else {
+         else()
+         }
+      
+      }
+  }
+
+void else(): {
+  } {
+    }
+
+void repeatTimes():
+{  int v;
+   }
+{ < REPAT > v = num() < TIMES > "{""}" {
+  
+  }
+  }
+
+
+// Comandos avanzados 
 void advancedCommands() :
 {
     int x, y;
     String d, o;
 }
 {
+  
     (
         <JUMP> "(" x=num() "," y=num() ")"
         {
@@ -159,8 +283,8 @@ void advancedCommands() :
     |   <GET> "(" get2() ")"
     |   <GRAB> "(" grab() ")"
     |   <LETGO> "(" letgo() ")"
-    |   <NOP> "(" nop() ")"
-    )
+    |   <NOP> "(" nop() ")")
+    
 }
 
 void walk() : {
@@ -181,10 +305,68 @@ void walk() : {
     ")"
     {
         if (d != null) {
+          int orient = world.getFacing();
+          if (orient ==0) {
+            if (d.equals("front")) {
+              world.moveForward(v, false);
+            } else if (d.equals("back")) {
+                world.moveVertically(v,false);
+            } else if (d.equals("right")) {
+              world.moveHorizontally(v,false);
+            } else {
+              world.moveHorizontally(-v,false);
+              }       
+          } else if (orient ==1 ) {
+            if (d.equals("front")) {
+              world.moveForward(v, false);
+            } else if (d.equals("back")) {
+                world.moveVertically(-v,false);
+            } else if (d.equals("right")) {
+              world.moveHorizontally(v,false);
+            } else {
+              world.moveHorizontally(-v,false);
+              }
+            } else if (orient ==2 ) {
+              if (d.equals("front")) {
+	              world.moveForward(v, false);
+	            } else if (d.equals("back")) {
+	                world.moveHorizontally(-v, false);;
+	            } else if (d.equals("right")) {
+	              world.moveVertically(v, false);
+	            } else {
+	              world.moveVertically(-v, false);
+	              }
+
+            } else {
+              if (d.equals("front")) {
+	              world.moveForward(v, false);
+	            } else if (d.equals("back")) {
+	                world.moveHorizontally(v, false);;
+	            } else if (d.equals("right")) {
+	              world.moveVertically(-v, false);
+	            } else {
+	              world.moveVertically(v, false);
+	              }
+
+              }
            salida = "Command: WALK " + v + " steps in direction " + d;
+
+           
         } else if (o != null) {
+          if (o.equals("north")) {
+            world.moveVertically(-v,false);
+            } else if (o.equals("south")) {
+            world.moveVertically(v,false);
+            } else if (o.equals("east")) {
+            world.moveHorizontally(v,false);
+            } else {
+              world.moveHorizontally(-v,false);
+              }
             salida = "Command: WALK " + v + " steps facing " + o;
+
+            
         } else {
+            world.moveForward(v, false);
             salida = "Command: WALK " + v + " steps forward";
         }
     }
@@ -208,10 +390,66 @@ void leap() : {
     ")"
     {
         if (d != null) {
+          if (d != null) {
+          int orient = world.getFacing();
+          if (orient==0) {
+            if (d.equals("front")) {
+              world.moveForward(v, true);
+            } else if (d.equals("back")) {
+                world.moveVertically(v,true);
+            } else if (d.equals("right")) {
+              world.moveHorizontally(v,true);
+            } else {
+              world.moveHorizontally(-v,true);
+              }       
+          } else if (orient==1) {
+            if (d.equals("front")) {
+              world.moveForward(v, true);
+            } else if (d.equals("back")) {
+                world.moveVertically(-v,true);
+            } else if (d.equals("right")) {
+              world.moveHorizontally(v,true);
+            } else {
+              world.moveHorizontally(-v,true);
+              }
+            } else if (orient ==2) {
+              if (d.equals("front")) {
+	              world.moveForward(v, true);
+	            } else if (d.equals("back")) {
+	                world.moveHorizontally(-v, true);;
+	            } else if (d.equals("right")) {
+	              world.moveVertically(v, true);
+	            } else {
+	              world.moveVertically(-v, true);
+	              }
+
+            } else {
+              if (d.equals("front")) {
+	              world.moveForward(v, true);
+	            } else if (d.equals("back")) {
+	                world.moveHorizontally(v, true);;
+	            } else if (d.equals("right")) {
+	              world.moveVertically(-v, true);
+	            } else {
+	              world.moveVertically(v, true);
+	              }
+
+              }
+         }
             salida = "Command: LEAP " + v + " steps in direction " + d;
         } else if (o != null) {
+          if (d.equals("north")) {
+            world.moveVertically(-v,true);
+            } else if (d.equals("south")) {
+            world.moveVertically(v,true);
+            } else if (d.equals("east")) {
+            world.moveHorizontally(v,true);
+            } else {
+              world.moveHorizontally(-v,true);
+              }
             salida = "Command: LEAP " + v + " steps facing " + o;
         } else {
+          	world.moveForward(v, true);
             salida = "Command: LEAP " + v + " steps forward";
         }
     }
@@ -229,7 +467,19 @@ void turn() :
 {
     <TURN> d=direction()
     {
-        salida = "Command: TURN in direction " + d;
+      if (d.equals("right")) {
+        world.turnRight();
+        } else if (d.equals("left")) {
+          world.turnRight();
+          world.turnRight();
+          world.turnRight();
+          } else {
+            world.turnRight();
+	        world.turnRight();
+	        world.turnRight();
+	        world.turnRight();
+            }
+      salida = "Command: TURN in direction " + d;
     }
 }
 
@@ -240,6 +490,72 @@ void turnt() :
 {
     <TURNT> o=orientation()
     {
+      int orient = world.getFacing();
+      if (orient==0) {
+        if (o.equals("north")) {
+          world.turnRight();
+	      world.turnRight();
+	      world.turnRight();
+	      world.turnRight();
+          } else if (o.equals("south")) {
+            world.turnRight();
+	        world.turnRight();
+            } else if (o.equals("west")) {
+              world.turnRight();
+              }else {
+                world.turnRight();
+	      		world.turnRight();
+	      		world.turnRight();
+                }
+        } else if (orient==1) {
+          if (o.equals("north")) {
+          world.turnRight();
+	      world.turnRight();
+          } else if (o.equals("south")) {
+            world.turnRight();
+	        world.turnRight();
+	        world.turnRight();
+	        world.turnRight();
+            } else if (o.equals("west")) {
+              world.turnRight();
+              world.turnRight();
+	          world.turnRight();
+              }else {
+                world.turnRight();
+                }
+          } else if (orient==2) {
+          if (o.equals("north")) {
+          world.turnRight();
+	      world.turnRight();
+	      world.turnRight();
+          } else if (o.equals("south")) {
+            world.turnRight();
+            } else if (o.equals("west")) {
+              world.turnRight();
+              world.turnRight();
+              }else {
+                world.turnRight();
+                world.turnRight();
+                world.turnRight();
+                world.turnRight();
+                }
+          } else {
+            if (o.equals("north")) {
+          world.turnRight();
+          } else if (o.equals("south")) {
+            world.turnRight();
+            world.turnRight();
+            world.turnRight();
+            } else if (o.equals("west")) {
+              world.turnRight();
+              world.turnRight();
+              world.turnRight();
+              world.turnRight();
+              }else {
+                world.turnRight();
+                world.turnRight();
+                }
+            }
         salida = "Command: TURNTO facing " + o;
     }
 }
@@ -251,6 +567,7 @@ void drop() :
 {
     <DROP> v=num()
     {
+      world.putChips(v);
         salida = "Command: DROP " + v + " chips";
     }
 }
@@ -262,6 +579,7 @@ void get2() :
 {
     <GET> v=num()
     {
+      world.pickChips(v);
         salida = "Command: GET " + v + " chips";
     }
 }
@@ -273,6 +591,7 @@ void grab() :
 {
     <GRAB> v=num()
     {
+      world.grabBalloons(v);
         salida = "Command: GRAB " + v + " balloons";
     }
 }
@@ -284,6 +603,7 @@ void letgo() :
 {
     <LETGO> v=num()
     {
+      world.putBalloons(v);
         salida = "Command: LETGO " + v + " balloons";
     }
 }
@@ -403,5 +723,11 @@ String orientation() :
     <ORIENTATION> { return token.image; }
 }
 
-
+String var() :
+{
+    String v;
+}
+{
+    <VAR> { return token.image; }
+}
 	

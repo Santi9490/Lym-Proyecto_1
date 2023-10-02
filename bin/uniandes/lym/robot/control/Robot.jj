@@ -182,7 +182,8 @@ void defproc() :
     LinkedList<String> arguments = new LinkedList<String>();
 }
 {
-          <DEFPROC> procedureName = var() "("
+    
+      <DEFPROC> procedureName = var() "("
     (
         var() { arguments.add(token.image); }
         (
@@ -231,26 +232,36 @@ boolean notCondition() :
     }
 }
 
-void if(): {
+void commandIf():{
+  boolean bool = false;  
   }
   {
-    < IF > (respuesta= cancommand()| respuesta= ) " { " ((avance|commands())*)?" }"
+    < IF > (respuesta= cancommand()| respuesta=facing() | respuesta = notCondition()" {" ( (bool = avancecommands()|bool =command())?((";" (bool = avancecommands()|bool =command())*)?)" }")
+    
     {
       if (respuesta == true):
       {
         salida =  "Command: If";
  
-        }
+      	}
        else {
-         else()
+         commandElse()
          }
       
       }
   }
 
-void else(): {
-  } {
+void commandElse():
+	{
+  	}
+  	{
+  	  < ELSE > ( " {"  (bool = avancecommands()|bool =command())?(((";" (bool = avancecommands()|bool =command()))*)?)" }")
+  	  {
+  	    salida = "Command: Else";
+  	    
+  	  }
     }
+
 
 void repeatTimes():
 {  int v;
@@ -258,7 +269,7 @@ void repeatTimes():
 { < REPAT > v = num() < TIMES > "{""}" {
   
   }
-  }
+}
 
 
 // Comandos avanzados 
@@ -268,7 +279,8 @@ void advancedCommands() :
     String d, o;
 }
 {
-  
+
+  
     (
         <JUMP> "(" x=num() "," y=num() ")"
         {

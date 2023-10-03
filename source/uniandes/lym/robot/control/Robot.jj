@@ -365,6 +365,29 @@ void commandElse(Console sistema):
   	  }
     }
 
+void repeat(Console sistema):
+{
+  int v;
+  boolean bool = false
+}
+{
+  <REPEAT>
+  v = num()
+  < TIMES >
+  "{" 
+        bool = advancedCommands(sistema) | bool = command(sistema)
+        (";" bool = advancedCommands(sistema) | bool = command(sistema))*   
+  "}"
+  {
+    for (int i = 1; i <= 10; i++) {
+            salida = "Command: While";
+        }
+      }
+    }
+  }
+}
+
+
 boolean advancedCommands(Console sistema) :
 {
     int x, y;

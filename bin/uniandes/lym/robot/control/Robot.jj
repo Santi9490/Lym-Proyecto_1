@@ -1,4 +1,3 @@
-
 /*
 Gramatica para el Robot:
 Autor: Alejandro Arango
@@ -140,7 +139,7 @@ TOKEN :
 
 
 void Robot(): {
-  Console sistema = new Console();
+  Console sistema = new Console(world);
   boolean respuesta = false; 
   } {
      respuesta = validar(sistema)
@@ -199,13 +198,35 @@ void defproc(Console sistema) :
         (
             "," var() { arguments.add(token.image); }
         )*
-    )? ")" "{" (respuesta = advancedCommands(sistema)| respuesta = command(sistema)|commandsconditional(sistema))*"}"
+    )? ")" "{" (respuesta = advancedCommands(sistema)| respuesta = command(sistema)|commandsconditional(sistema))* "}"
     {
        salida = "Command: DEFPROC " + procedureName;
     }
 }
 
 
+boolean condition(Console sistema): {
+  salida=new String();
+  } {
+(
+    
+    (
+        <FACING> facing()
+      | <CAN> canCommand(sistema)
+      | <NOT> notCondition(sistema) )
+    {
+		    try {
+	    			 Thread.sleep(900);
+	    	    } catch (InterruptedException e) {
+	    			        System.err.format("IOException: %s%n", e);
+	    		    }
+	    			 
+			sistema.printOutput(salida);
+			return true;
+		})+
+
+    	| <EOF> {return false;}
+  }
 
 boolean facing() :
 {
@@ -255,7 +276,9 @@ boolean notCondition(Console sistema) :
 
 boolean commandsconditional(Console sistema):
 {
-  } {(
+  salida=new String();
+  } {
+    (
     
     (
         <WHILE> conditionwhile(sistema)
@@ -279,41 +302,38 @@ boolean commandsconditional(Console sistema):
 
 void conditionwhile(Console sistema):
 {
-  boolean valor= false;
-  boolean result = false;
+  boolean valor = false;
+  boolean bool = false;
 }
 {
-  
-   <WHILE> valor= facing()| valor = canCommand(sistema) | valor = notCondition(sistema)
-   "{" bool = advancedCommands(sistema) | bool = command(sistema)
-        (";" bool = advancedCommands(sistema) | bool = command(sistema))*"}"
-   {
-     if (valor) {
-        while (valor) { 
-                
-            
-
-            if (!valor) {
-               salida= "Command:While ";
-                break;
-            }
-
-            
-            }
-         
+  <WHILE> valor = condition(sistema)
+  "{" 
+  bool = commandsconditional(sistema)
+  (";" bool = commandsconditional(sistema))* 
+  "}"
+  {
+    if (valor) {
+      while (bool) {
+        if (!condition(sistema)) {
+          salida = "Command: While";
+          break;
+        }
+        if (!bool) {
+          salida = "Command: While";
+          break;
+        }
+      }
+    }
   }
-}  
 }
+
 
 void commandIf(Console sistema):{
   boolean bool = false;
   boolean respuesta = false;
   }
   {
-    <IF> 
-        respuesta = canCommand(sistema)
-        | respuesta = facing()
-        | respuesta = notCondition(sistema)
+<IF> respuesta = condition(sistema) 
      "{" 
         bool = advancedCommands(sistema) | bool = command(sistema)
         (";" bool = advancedCommands(sistema) | bool = command(sistema))*
@@ -349,6 +369,7 @@ boolean advancedCommands(Console sistema) :
 {
     int x, y;
     String d, o;
+    salida=new String();
 }
 {
 
@@ -830,848 +851,3 @@ String var() :
 {
     <VAR> { return token.image; }
 }
-=======
-/*
-Gramatica para el Robot:
-Autor: Alejandro Arango
-Modificado por: Silvia Takahashi
-Modificado por: Juan Pablo Morales.
-Agregadas producciones para manejar globos
-Modificado por Silvia Takahashi
-
-
- **/
-
-
-options 
-{
-  
-	LOOKAHEAD=1; 
-	IGNORE_CASE=true;
-	STATIC = false;
-	
-}
-   
-
-PARSER_BEGIN(Robot)
-
-package uniandes.lym.robot.control;
-
-import uniandes.lym.robot.kernel.*;
-import uniandes.lym.robot.view.Console;
- 
-import java.awt.Point;
-import java.io.*;
-import java.util.Vector;
-import java.util.LinkedList;
-
-@SuppressWarnings("serial")
-public class Robot 
-{
-
-
-	private RobotWorldDec world;
-	
-	
-	void setWorld(RobotWorld w) {
-		world = (RobotWorldDec) w;	
-	}
-
-	String salida=new String();
-}
-PARSER_END(Robot)
-
-SKIP:
-{
-	" "
-	|	"\r"
-	|	"\t"
-	| "\n"
-}
-
-TOKEN: /* Nombres de Comandos */
-{
-
-			<MOV:  "Mov">
-		| 	<RIGHT: "RIGHT">
-		| 	<PUT: "Put">
-		| 	<PICK: "Pick">
-		|  < POP: "Pop" >
-		|  <GO: "GO" >
-        |  < HOP:  "HOP" >		
-
-}
-
-TOKEN:
-{
-		<BALLOONS:  "BALLOONS" >
-		|	<CHIPS:     "CHIPS"  >	
-
-}
-
-TOKEN : /* validar */
-{
-		  < DEFVAR : "Defvar">
-		  | < DEFPROC : "Defproc">
-}
-
-TOKEN :  /* comandos avanzados */
-{
-      < JUMP : "jump">
-    | < WALK : "walk">
-    | < LEAP : "leap">
-    | < TURN : "turn">
-    | < TURNT : "turnto">
-    | < DROP : "drop">
-    | < GET : "get">
-    | < GRAB : "grab">
-    | < LETGO : "letgo">
-    | < NOP : "nop">
-}
-
-TOKEN : /* estructuras de control*/
-{
-		  < IF : "If">
-		  | < ELSE : "Else">
-		  | < WHILE : "While">
-		  | < REPEAT : "Repeat">
-		  | < TIMES : "Times">
-		  
-}
-
-
-
-
-
-TOKEN : {
-		  < CAN : "Can">
-		| < FACING : "Facing">
-		|  < NOT : "Not" >
-}
-
-
-
-
-TOKEN :
-{
-      < DIRECTION : "front" | "right" | "left" | "back"|"around">
-    | < ORIENTATION : "north" | "south" | "west" | "east">
-}
-
-TOKEN :
-{
-  
-  <#LETRA: ["a"-"z", "A"-"Z"] >
-  | <#DIGIT: ["0"-"9"] >
-  | <NUM: (<DIGIT>)+ >
-  | < VAR : (< LETRA>|"_" )(< LETRA>| < DIGIT > | "_")* > 
-        
-}
-
-
-void Robot(): {
-  Console sistema = new Console();
-  boolean respuesta = false; 
-  } {
-     respuesta = validar(sistema)
-     | respuesta = commandsconditional(sistema)
-     | respuesta = advancedCommands(sistema)
-     | respuesta = command(sistema)
-    }
-
-boolean validar(Console sistema): {
-  String variable;
-   }
-{
-  (
-  (
-   <DEFVAR> (defvar())
-  | <DEFPROC> (defproc(sistema))
-  )
-    {
-		    try {
-	    			 Thread.sleep(900);
-	    	    } catch (InterruptedException e) {
-	    			        System.err.format("IOException: %s%n", e);
-	    		    }
-	    			 
-			sistema.printOutput(salida);
-			return true;
-		})+
-
-}
-
-void defvar() :
-{
-    String variableName;
-    int variableValue;
-}
-{
-  
-    <DEFVAR> variableName = var() variableValue = num()
-    {
-      salida = "Command: DEFVAR " + variableName;
-    }
-}
-
-
-void defproc(Console sistema) :
-{
-    String procedureName;
-    LinkedList<String> arguments = new LinkedList<String>();
-    boolean respuesta = false;
-}
-{
-    
-      <DEFPROC> procedureName = var() "("
-    (
-        var() { arguments.add(token.image); }
-        (
-            "," var() { arguments.add(token.image); }
-        )*
-    )? ")" "{" (respuesta = advancedCommands(sistema)| respuesta = command(sistema)|commandsconditional(sistema))*"}"
-    {
-       salida = "Command: DEFPROC " + procedureName;
-    }
-}
-
-
-
-boolean facing() :
-{
-    String o;
-    boolean respuesta = false;
-}
-{
-    <FACING> "(" o=orientation() ")" 
-    {
-        if (o.equals("north")) {
-          return world.facingNorth();
-          } else if (o.equals("south")) {
-            return world.facingSouth();
-            } else if (o.equals("west")) {
-            return world.facingWest();
-            } else {
-              return world.facingEast();
-              }
-           
-        return respuesta;
-    }
-}
-
-boolean canCommand(Console sistema) :
-{
-  boolean respuesta = false;
-}
-{
-    <CAN>"("respuesta = advancedCommands(sistema)| respuesta = command(sistema)")" {
-       salida= "Command:Can";
-       return respuesta;
-      }
-}
-
-boolean notCondition(Console sistema) :
-{
-    boolean conditionResult;
-}
-{
-    <NOT> conditionResult = condition()
-    {
-        
-    }
-}
-
-void commandIf():{
-  boolean bool = false;  
-    boolean respuesta = false;
-}
-{
-    <NOT> respuesta = advancedCommands(sistema)| respuesta = command(sistema)
-    {
-       salida= "Command:Not";
-        return !respuesta;
-    }
-}
-
-
-boolean commandsconditional(Console sistema):
-{
-  } {(
-    
-    (
-        <WHILE> conditionwhile(sistema)
-      | <IF> commandIf(sistema)
-      | <ELSE> commandElse(sistema) )
-    {
-		    try {
-	    			 Thread.sleep(900);
-	    	    } catch (InterruptedException e) {
-	    			        System.err.format("IOException: %s%n", e);
-	    		    }
-	    			 
-			sistema.printOutput(salida);
-			return true;
-		})+
-
-    	| <EOF> {return false;}
-    }
-
-
-
-void conditionwhile(Console sistema):
-{
-  boolean valor= false;
-  boolean result = false;
-}
-{
-  
-   <WHILE> valor= facing()| valor = canCommand(sistema) | valor = notCondition(sistema)
-   "{" bool = advancedCommands(sistema) | bool = command(sistema)
-        (";" bool = advancedCommands(sistema) | bool = command(sistema))*"}"
-   {
-     if (valor) {
-        while (valor) { 
-                
-            
-
-            if (!valor) {
-               salida= "Command:While ";
-                break;
-            }
-
-            
-            }
-         
-  }
-}  
-}
-
-void commandIf(Console sistema):{
-  boolean bool = false;
-  boolean respuesta = false;
-  }
-  {
-    < IF > (respuesta= cancommand()| respuesta=facing() | respuesta = notCondition()" {" ( (bool = avancecommands()|bool =command())?((";" (bool = avancecommands()|bool =command())*)?)" }")
-    
-    <IF> 
-        respuesta = canCommand(sistema)
-        | respuesta = facing()
-        | respuesta = notCondition(sistema)
-     "{" 
-        bool = advancedCommands(sistema) | bool = command(sistema)
-        (";" bool = advancedCommands(sistema) | bool = command(sistema))*
-      
-      "}" <ELSE> commandElse(sistema)
-    
-    {
-      if (respuesta == true)
-      {
-        salida =  "Command: If";
- 
-      	}
-      
-      }
-  }
-  
-
-void commandElse(Console sistema):
-	{
-	  boolean result = false;
-  	}
-  	{
-  	  < ELSE > "{"
-  	    result = advancedCommands(sistema)|result =command(sistema)
-  	    ((";" result = advancedCommands(sistema)|result =command(sistema))*)"}"
-  	  {
-  	    salida = "Command: Else";
-  	    
-  	  }
-    }
-
-boolean advancedCommands(Console sistema) :
-{
-    int x, y;
-    String d, o;
-}
-{
-
-  (
-    
-    (
-        <JUMP> "(" x=num() "," y=num() ")"
-        {
-            world.setPostion(x, y);
-            salida = "Command: JUMP to position (" + x + "," + y + ")";
-        }
-    |   <WALK> (walk())
-    |   <LEAP> (leap())
-    |   <TURN> "(" turn() ")"
-    |   <TURNT> "(" turnt() ")"
-    |   <DROP> "(" drop() ")"
-    |   <GET> "(" get2() ")"
-    |   <GRAB> "(" grab() ")"
-    |   <LETGO> "(" letgo() ")"
-    |   <NOP> "(" nop() ")")
-    {
-		    try {
-	    			 Thread.sleep(900);
-	    	    } catch (InterruptedException e) {
-	    			        System.err.format("IOException: %s%n", e);
-	    		    }
-	    			 
-			sistema.printOutput(salida);
-			return true;
-		})+
-
-    	| <EOF> {return false;} 
-
-    
-    
-}
-
-
-void walk() : {
-    int v;
-    String d = null;
-    String o = null;
-}
-{
-    <WALK> "("
-    v = num()
-    (   ","
-        (
-          <DIRECTION> { d = direction(); }
-        |
-        <ORIENTATION> { o = orientation(); }
-      )
-    )?
-    ")"
-    {
-        if (d != null) {
-          int orient = world.getFacing();
-          if (orient ==0) {
-            if (d.equals("front")) {
-              world.moveForward(v, false);
-            } else if (d.equals("back")) {
-                world.moveVertically(v,false);
-            } else if (d.equals("right")) {
-              world.moveHorizontally(v,false);
-            } else {
-              world.moveHorizontally(-v,false);
-              }       
-          } else if (orient ==1 ) {
-            if (d.equals("front")) {
-              world.moveForward(v, false);
-            } else if (d.equals("back")) {
-                world.moveVertically(-v,false);
-            } else if (d.equals("right")) {
-              world.moveHorizontally(v,false);
-            } else {
-              world.moveHorizontally(-v,false);
-              }
-            } else if (orient ==2 ) {
-              if (d.equals("front")) {
-	              world.moveForward(v, false);
-	            } else if (d.equals("back")) {
-	                world.moveHorizontally(-v, false);;
-	            } else if (d.equals("right")) {
-	              world.moveVertically(v, false);
-	            } else {
-	              world.moveVertically(-v, false);
-	              }
-
-            } else {
-              if (d.equals("front")) {
-	              world.moveForward(v, false);
-	            } else if (d.equals("back")) {
-	                world.moveHorizontally(v, false);;
-	            } else if (d.equals("right")) {
-	              world.moveVertically(-v, false);
-	            } else {
-	              world.moveVertically(v, false);
-	              }
-
-              }
-           salida = "Command: WALK " + v + " steps in direction " + d;
-
-           
-        } else if (o != null) {
-          if (o.equals("north")) {
-            world.moveVertically(-v,false);
-            } else if (o.equals("south")) {
-            world.moveVertically(v,false);
-            } else if (o.equals("east")) {
-            world.moveHorizontally(v,false);
-            } else {
-              world.moveHorizontally(-v,false);
-              }
-            salida = "Command: WALK " + v + " steps facing " + o;
-
-            
-        } else {
-            world.moveForward(v, false);
-            salida = "Command: WALK " + v + " steps forward";
-        }
-    }
-}
-
-void leap() : {
-    int v;
-    String d = null;
-    String o = null;
-}
-{
-    <LEAP> "("
-    v = num() 
-    (   ","
-        (
-          <DIRECTION> { d = direction(); }
-        |
-        <ORIENTATION> { o = orientation(); }
-      )
-    )?
-    ")"
-    {
-        if (d != null) {
-          if (d != null) {
-          int orient = world.getFacing();
-          if (orient==0) {
-            if (d.equals("front")) {
-              world.moveForward(v, true);
-            } else if (d.equals("back")) {
-                world.moveVertically(v,true);
-            } else if (d.equals("right")) {
-              world.moveHorizontally(v,true);
-            } else {
-              world.moveHorizontally(-v,true);
-              }       
-          } else if (orient==1) {
-            if (d.equals("front")) {
-              world.moveForward(v, true);
-            } else if (d.equals("back")) {
-                world.moveVertically(-v,true);
-            } else if (d.equals("right")) {
-              world.moveHorizontally(v,true);
-            } else {
-              world.moveHorizontally(-v,true);
-              }
-            } else if (orient ==2) {
-              if (d.equals("front")) {
-	              world.moveForward(v, true);
-	            } else if (d.equals("back")) {
-	                world.moveHorizontally(-v, true);;
-	            } else if (d.equals("right")) {
-	              world.moveVertically(v, true);
-	            } else {
-	              world.moveVertically(-v, true);
-	              }
-
-            } else {
-              if (d.equals("front")) {
-	              world.moveForward(v, true);
-	            } else if (d.equals("back")) {
-	                world.moveHorizontally(v, true);;
-	            } else if (d.equals("right")) {
-	              world.moveVertically(-v, true);
-	            } else {
-	              world.moveVertically(v, true);
-	              }
-
-              }
-         }
-            salida = "Command: LEAP " + v + " steps in direction " + d;
-        } else if (o != null) {
-          if (d.equals("north")) {
-            world.moveVertically(-v,true);
-            } else if (d.equals("south")) {
-            world.moveVertically(v,true);
-            } else if (d.equals("east")) {
-            world.moveHorizontally(v,true);
-            } else {
-              world.moveHorizontally(-v,true);
-              }
-            salida = "Command: LEAP " + v + " steps facing " + o;
-        } else {
-          	world.moveForward(v, true);
-            salida = "Command: LEAP " + v + " steps forward";
-        }
-    }
-}
-
-
-
-
-
-
-void turn() :
-{
-    String d;
-}
-{
-    <TURN> d=direction()
-    {
-      if (d.equals("right")) {
-        world.turnRight();
-        } else if (d.equals("left")) {
-          world.turnRight();
-          world.turnRight();
-          world.turnRight();
-          } else {
-            world.turnRight();
-	        world.turnRight();
-	        world.turnRight();
-	        world.turnRight();
-            }
-      salida = "Command: TURN in direction " + d;
-    }
-}
-
-void turnt() :
-{
-    String o;
-}
-{
-    <TURNT> o=orientation()
-    {
-      int orient = world.getFacing();
-      if (orient==0) {
-        if (o.equals("north")) {
-          world.turnRight();
-	      world.turnRight();
-	      world.turnRight();
-	      world.turnRight();
-          } else if (o.equals("south")) {
-            world.turnRight();
-	        world.turnRight();
-            } else if (o.equals("west")) {
-              world.turnRight();
-              }else {
-                world.turnRight();
-	      		world.turnRight();
-	      		world.turnRight();
-                }
-        } else if (orient==1) {
-          if (o.equals("north")) {
-          world.turnRight();
-	      world.turnRight();
-          } else if (o.equals("south")) {
-            world.turnRight();
-	        world.turnRight();
-	        world.turnRight();
-	        world.turnRight();
-            } else if (o.equals("west")) {
-              world.turnRight();
-              world.turnRight();
-	          world.turnRight();
-              }else {
-                world.turnRight();
-                }
-          } else if (orient==2) {
-          if (o.equals("north")) {
-          world.turnRight();
-	      world.turnRight();
-	      world.turnRight();
-          } else if (o.equals("south")) {
-            world.turnRight();
-            } else if (o.equals("west")) {
-              world.turnRight();
-              world.turnRight();
-              }else {
-                world.turnRight();
-                world.turnRight();
-                world.turnRight();
-                world.turnRight();
-                }
-          } else {
-            if (o.equals("north")) {
-          world.turnRight();
-          } else if (o.equals("south")) {
-            world.turnRight();
-            world.turnRight();
-            world.turnRight();
-            } else if (o.equals("west")) {
-              world.turnRight();
-              world.turnRight();
-              world.turnRight();
-              world.turnRight();
-              }else {
-                world.turnRight();
-                world.turnRight();
-                }
-            }
-        salida = "Command: TURNTO facing " + o;
-    }
-}
-
-void drop() :
-{
-    int v;
-}
-{
-    <DROP> v=num()
-    {
-      world.putChips(v);
-        salida = "Command: DROP " + v + " chips";
-    }
-}
-
-void get2() :
-{
-    int v;
-}
-{
-    <GET> v=num()
-    {
-      world.pickChips(v);
-        salida = "Command: GET " + v + " chips";
-    }
-}
-
-void grab() :
-{
-    int v;
-}
-{
-    <GRAB> v=num()
-    {
-      world.grabBalloons(v);
-        salida = "Command: GRAB " + v + " balloons";
-    }
-}
-
-void letgo() :
-{
-    int v;
-}
-{
-    <LETGO> v=num()
-    {
-      world.putBalloons(v);
-        salida = "Command: LETGO " + v + " balloons";
-    }
-}
-
-void nop() :
-{}
-{
-    <NOP>
-    {
-        salida = "Command: NOP";
-}
-}
-
-
-
-
-
-
-
-
-	//boolean command(uniandes.lym.robot.view.Console sistema) :
-	boolean command(Console sistema):
-	{	
-		
-		int x,y;
-		salida=new String();	
-	}
-
-	
-	{
-		(
-		  (
-		   <RIGHT> "(" ")" {world.turnRight();salida = "Command: Turnright";}
-		| 	<MOV>  "(" x=num() ")" {world.moveForward(x,false);salida = "Command: Moveforward ";}  
-		| 	<HOP>  "(" x=num() ")" {world.moveForward(x,true);salida = "Command:Jumpforward ";}
-		| 	<GO>  "(" x=num() "," y=num()")" {world.setPostion(x,y);salida = "Command:GO ";}  
-		|  <PUT> "("  put() ")"					  			
-		|  <PICK> "(" get()  ")"	
-	    |  < POP > "(" x=num() ")" {world.popBalloons(x); salida = "Comando:  Pop";}
-		) ";" 
-
-		{
-		    try {
-	    			 Thread.sleep(900);
-	    	    } catch (InterruptedException e) {
-	    			        System.err.format("IOException: %s%n", e);
-	    		    }
-	    			 
-			sistema.printOutput(salida);
-			return true;
-		})+
-
-    	| <EOF> {return false;} 
-	}
-
-	void put() :
-	{
-		int f=1;	
-	}
-	{
-		( <CHIPS>    "," f=num() {world.putChips(f); salida = "Command:  Put Chips"; })
-		|  	  ( <BALLOONS>   "," f=num() {world.putBalloons(f); salida = "Command:  Put Balloons";})	 
-
-	}
-
-	void get() :
-	{
-		int f=1;	
-	}
-	{
-		( <CHIPS>   "," f=num() {world.pickChips(f);salida = "Command:  Pick chips";})
-		|  	  ( <BALLOONS>   "," f=num() {world.grabBalloons(f);salida="Command:  Pick balloons";})	 
-
-	}
-
-	
-	
-
-	/**
-	 * Unsigned decimal number
-	 * @return the corresponding value of the string
-	 * @error  corresponding value is too large
-	 */
-
-	int num() throws Error:
-	{	
-		int total=1;
-	}
-	{
-		<NUM>
-		{
-			try 
-			{
-				total = Integer.parseInt(token.image);
-			} 
-			catch (NumberFormatException ee) 
-			{
-				throw new Error("Number out of bounds: "+token.image+" !!");
-			}
-			return total;
-		}
-	}
-
-String direction() :
-{
-    String d;
-}
-{
-    <DIRECTION> { return token.image; }
-}
-
-String orientation() :
-{
-    String o;
-}
-{
-    <ORIENTATION> { return token.image; }
-}
-
-String var() :
-{
-    String v;
-}
-{
-    <VAR> { return token.image; }
-}
->>>>>>> 3bc44881de129ec4049c17c21d8ca2c0c6b54270
-	

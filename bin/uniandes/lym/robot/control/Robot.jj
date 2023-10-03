@@ -283,7 +283,8 @@ boolean commandsconditional(Console sistema):
     (
         <WHILE> conditionwhile(sistema)
       | <IF> commandIf(sistema)
-      | <ELSE> commandElse(sistema) )
+      | <ELSE> commandElse(sistema)
+      | <REPEAT> repeat(sistema))
     {
 		    try {
 	    			 Thread.sleep(900);
@@ -368,7 +369,7 @@ void commandElse(Console sistema):
 void repeat(Console sistema):
 	{
 	  	boolean bool = false;
-  		int v;
+  		int v=0;
 	}
 	{
   		<REPEAT>
@@ -377,14 +378,14 @@ void repeat(Console sistema):
   		"{" 
         bool = advancedCommands(sistema) | bool = command(sistema)
         (";" bool = advancedCommands(sistema) | bool = command(sistema))*   
-  		"}"
- 	}
-  	{
+  		"}"{
     	for (int i = 1; i <= v; i++)
     	{
             salida = "Command: While";
         }
     }
+ 	}
+  	
 
 
 

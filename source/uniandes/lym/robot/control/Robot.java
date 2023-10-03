@@ -36,7 +36,8 @@ public class Robot implements RobotConstants {
     case 0:
     case IF:
     case ELSE:
-    case WHILE:{
+    case WHILE:
+    case REPEAT:{
       respuesta = commandsconditional(sistema);
       break;
       }
@@ -175,7 +176,8 @@ arguments.add(token.image);
       case NOP:
       case IF:
       case ELSE:
-      case WHILE:{
+      case WHILE:
+      case REPEAT:{
         ;
         break;
         }
@@ -210,7 +212,8 @@ arguments.add(token.image);
         }
       case IF:
       case ELSE:
-      case WHILE:{
+      case WHILE:
+      case REPEAT:{
         commandsconditional(sistema);
         break;
         }
@@ -369,7 +372,8 @@ salida= "Command:Not";
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IF:
     case ELSE:
-    case WHILE:{
+    case WHILE:
+    case REPEAT:{
       label_5:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -388,6 +392,11 @@ salida= "Command:Not";
           commandElse(sistema);
           break;
           }
+        case REPEAT:{
+          jj_consume_token(REPEAT);
+          repeat(sistema);
+          break;
+          }
         default:
           jj_la1[12] = jj_gen;
           jj_consume_token(-1);
@@ -404,7 +413,8 @@ try {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case IF:
         case ELSE:
-        case WHILE:{
+        case WHILE:
+        case REPEAT:{
           ;
           break;
           }
@@ -611,6 +621,82 @@ salida = "Command: Else";
     }
 }
 
+  final public void repeat(Console sistema) throws ParseException {boolean bool = false;
+                int v=0;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case REPEAT:{
+      jj_consume_token(REPEAT);
+      v = num();
+      jj_consume_token(TIMES);
+      jj_consume_token(43);
+      bool = advancedCommands(sistema);
+      break;
+      }
+    case 0:
+    case MOV:
+    case RIGHT:
+    case PUT:
+    case PICK:
+    case POP:
+    case GO:
+    case HOP:{
+      bool = command(sistema);
+      label_9:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 0:
+        case MOV:
+        case RIGHT:
+        case PUT:
+        case PICK:
+        case POP:
+        case GO:
+        case HOP:
+        case 45:{
+          ;
+          break;
+          }
+        default:
+          jj_la1[22] = jj_gen;
+          break label_9;
+        }
+        switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case 45:{
+          jj_consume_token(45);
+          bool = advancedCommands(sistema);
+          break;
+          }
+        case 0:
+        case MOV:
+        case RIGHT:
+        case PUT:
+        case PICK:
+        case POP:
+        case GO:
+        case HOP:{
+          bool = command(sistema);
+          break;
+          }
+        default:
+          jj_la1[23] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+      jj_consume_token(44);
+for (int i = 1; i <= v; i++)
+        {
+            salida = "Command: While";
+        }
+      break;
+      }
+    default:
+      jj_la1[24] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+}
+
   final public boolean advancedCommands(Console sistema) throws ParseException {int x, y;
     String d, o;
     salida=new String();
@@ -625,7 +711,7 @@ salida = "Command: Else";
     case GRAB:
     case LETGO:
     case NOP:{
-      label_9:
+      label_10:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case JUMP:{
@@ -699,7 +785,7 @@ world.setPostion(x, y);
           break;
           }
         default:
-          jj_la1[22] = jj_gen;
+          jj_la1[25] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -726,8 +812,8 @@ try {
           break;
           }
         default:
-          jj_la1[23] = jj_gen;
-          break label_9;
+          jj_la1[26] = jj_gen;
+          break label_10;
         }
       }
       break;
@@ -738,7 +824,7 @@ try {
       break;
       }
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[27] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -766,14 +852,14 @@ o = orientation();
         break;
         }
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[28] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
       }
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[29] = jj_gen;
       ;
     }
     jj_consume_token(42);
@@ -865,14 +951,14 @@ o = orientation();
         break;
         }
       default:
-        jj_la1[27] = jj_gen;
+        jj_la1[30] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
       }
     default:
-      jj_la1[28] = jj_gen;
+      jj_la1[31] = jj_gen;
       ;
     }
     jj_consume_token(42);
@@ -1075,7 +1161,7 @@ salida = "Command: NOP";
     case POP:
     case GO:
     case HOP:{
-      label_10:
+      label_11:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case RIGHT:{
@@ -1134,7 +1220,7 @@ world.popBalloons(x); salida = "Comando:  Pop";
           break;
           }
         default:
-          jj_la1[29] = jj_gen;
+          jj_la1[32] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1159,8 +1245,8 @@ try {
           break;
           }
         default:
-          jj_la1[30] = jj_gen;
-          break label_10;
+          jj_la1[33] = jj_gen;
+          break label_11;
         }
       }
       break;
@@ -1171,7 +1257,7 @@ try {
       break;
       }
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[34] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1195,7 +1281,7 @@ world.putBalloons(f); salida = "Command:  Put Balloons";
       break;
       }
     default:
-      jj_la1[32] = jj_gen;
+      jj_la1[35] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1218,7 +1304,7 @@ world.grabBalloons(f);salida="Command:  Pick balloons";
       break;
       }
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[36] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1271,7 +1357,7 @@ try
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[34];
+  final private int[] jj_la1 = new int[37];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -1279,10 +1365,10 @@ try
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x1fffcfe1,0xc000,0xc000,0x0,0x0,0x1fff0fe1,0x1fff0fe1,0x80000000,0x80000000,0x80000001,0x80000fe1,0xfe1,0x1c000000,0x1c000000,0x1c000001,0x0,0xfe1,0xfe1,0x4000fe1,0xfe1,0xfe1,0x8000fe1,0x3ff0000,0x3ff0000,0x3ff0001,0x0,0x0,0x0,0x0,0xfe0,0xfe0,0xfe1,0x3000,0x3000,};
+	   jj_la1_0 = new int[] {0x3fffcfe1,0xc000,0xc000,0x0,0x0,0x3fff0fe1,0x3fff0fe1,0x80000000,0x80000000,0x80000001,0x80000fe1,0xfe1,0x3c000000,0x3c000000,0x3c000001,0x0,0xfe1,0xfe1,0x4000fe1,0xfe1,0xfe1,0x8000fe1,0xfe1,0xfe1,0x20000fe1,0x3ff0000,0x3ff0000,0x3ff0001,0x0,0x0,0x0,0x0,0xfe0,0xfe0,0xfe1,0x3000,0x3000,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x200,0x80,0x0,0x0,0x3,0x3,0x3,0x0,0x2,0x0,0x0,0x0,0x2000,0x2000,0x2000,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0xc,0x200,0xc,0x200,0x0,0x0,0x0,0x0,0x0,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x200,0x80,0x0,0x0,0x3,0x3,0x3,0x0,0x2,0x0,0x0,0x0,0x2000,0x2000,0x2000,0x0,0x2000,0x2000,0x0,0x2000,0x2000,0x0,0x0,0x0,0x0,0xc,0x200,0xc,0x200,0x0,0x0,0x0,0x0,0x0,};
 	}
 
   /** Constructor with InputStream. */
@@ -1296,7 +1382,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 34; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 37; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1310,7 +1396,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 34; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 37; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -1320,7 +1406,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 34; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 37; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1338,7 +1424,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 34; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 37; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -1347,7 +1433,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 34; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 37; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1356,7 +1442,7 @@ try
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 34; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 37; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -1412,7 +1498,7 @@ try
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 34; i++) {
+	 for (int i = 0; i < 37; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {
